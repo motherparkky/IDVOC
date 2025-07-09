@@ -1,0 +1,46 @@
+version: '3'
+services:
+  commentsinteractor:
+    build: ./CommentsInteractor
+    container_name: commentsinteractor
+    hostname: commentsinteractor
+    ports:
+      - "9000:9000"
+    networks:
+      - commentnet
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 150M
+
+  commentsengine:
+    build: ./CommentsEngine
+    container_name: commentsengine
+    hostname: commentsengine
+    ports:
+      - "8000:8000"
+    networks:
+      - commentnet
+    environment:
+      - REDIS_ENDPOINT=redis:6379
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 150M
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - commentnet
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 150M
+
+networks:
+  commentnet:
+    driver: bridge
